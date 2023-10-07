@@ -47,3 +47,5 @@ you will see twotier network there
 to check twotier network --> docker network inspect twotier
 
 to go inside the container --> docker exec -it <container_id> bash 
+
+
