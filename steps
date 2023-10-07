@@ -1,0 +1,49 @@
+
+
+
+
+create an instance> install docker on it
+check docker version
+check any container is running i.e. docker ps
+if you get [permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get "http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/json": 
+dial unix /var/run/docker.sock: connect: permission denied]
+then give permission "sudo chown $USER /var/run/docker.sock"
+docker ps
+clone the code into instance
+git clone "project url"
+ls
+build the docker file to create image 
+docker build . -t <image_name>
+docker images
+run the image  --> docker run -d -p 5000:5000 flaskapp:latest sleep infinity
+flaskapp is the the image name
+open port 5000 ininbound rules and run
+public ip:5000
+
+create MySQL container
+docker run -d -p 3360:3306 --name mysql -e MYSQL_ROOT_PASSWORD="admin" mysql:5.7 sleep infinity
+********BUT THERE IS NO CONNECTIVITY BET THESE TWO CONTAINERS*******************
+
+Create docker network 
+docker network create <network_name>
+we have to give this network to both of the container
+--> kill both the containers i.e. docker kill <container_id>
+
+adding network to flask container-->
+docker run -d -p 5000:5000 --network=twotier --name=flaskapp -e MYSQL_HOST=mysql -e MYSQL_USER=admin -e MYSQL_PASSWORD=admin -e MYSQL_DB=mydb flaskapp:latest sleep infinity 
+
+twotier--> network name
+MYSQL_HOST=mysql --> host name
+MYSQL_USER=admin --> admin is a uername
+MYSQL_PASSWORD=admin --> passsword is admin
+MYSQL_DB=mydb --> mydb is a db name
+flaskapp:latest --> image name that we had created earlier
+
+adding network to mysql container
+docker run -d -p 3306:3306 --network=twotier --name=mysql -e MYSQL_DATABASE=mydb -e MYSQL_USER=root -e MYSQL_ROOT_PASSWORD="admin" mysql:5.7 sleep infinity 
+check docker network ls
+you will see twotier network there
+
+to check twotier network --> docker network inspect twotier
+
+to go inside the container --> docker exec -it <container_id> bash 
